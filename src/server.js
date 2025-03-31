@@ -17,7 +17,7 @@ export const setupServer = () => {
       },
     }),
   );
-  app.get('/api/contact', async (reg, res) => {
+  app.get('/contacts', async (reg, res) => {
     const data = await getcontacts();
     res.json({
       status: 200,
@@ -26,7 +26,7 @@ export const setupServer = () => {
     });
   });
 
-  app.get('/api/contact/:id', async (reg, res) => {
+  app.get('/contacts/:id', async (reg, res) => {
     const { id } = reg.params;
     const data = await getcontactById(id);
     if (!data) {
@@ -53,7 +53,7 @@ export const setupServer = () => {
       messege: error.messege,
     });
   });
-  console.log(process.env.PORT);
+  // console.log(process.env.PORT);
   const port = Number(getEnvVar('PORT', 3000));
 
   app.listen(port, () => console.log(`Server running on port ${port}`));
