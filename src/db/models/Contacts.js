@@ -1,5 +1,5 @@
 import { request } from 'express';
-import { Schema, model } from 'mongoose';
+import { Schema, model, version } from 'mongoose';
 
 const contactShema = new Schema(
   {
@@ -28,6 +28,7 @@ const contactShema = new Schema(
   {
     timestamps: true,
   },
+  { versionKey: false, timestamps: true },
 );
 
 const contactCollection = model('contacts', contactShema);
