@@ -16,7 +16,7 @@ export const getContactsController = async (req, res) => {
   });
 };
 
-export const getcontactByIdController = async (req, res) => {
+export const getContactByIdController = async (req, res) => {
   const { id } = req.params;
 
   const data = await getcontactById(id);
@@ -50,7 +50,7 @@ export const patchContactController = async (req, res) => {
   res.json({
     status: 200,
     message: 'Successfully patched a contact!',
-    data: result.data,
+    result,
   });
 };
 

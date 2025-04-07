@@ -1,5 +1,5 @@
-export const notFoundHandler = (reg, res) => {
+export const notFoundHandler = (req, res) => {
   res.status(404).json({
-    messege: `${reg.url} not found`,
+    messege: `${req.url} not found`,
   });
 };
