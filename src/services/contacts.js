@@ -19,15 +19,15 @@ export const getcontacts = async ({
   if (filters.isFavourite !== undefined) {
     contactQuery.where('isFavourite').equals(filters.isFavourite);
   }
+  const totalItems = await contactCollection
+    .find()
+    .merge(contactQuery)
+    .countDocuments();
 
   const data = await contactQuery
     .skip(skip)
     .limit(perPage)
     .sort({ [sortBy]: sortOrder });
-  const totalItems = await contactCollection
-    .find()
-    .merge(contactQuery)
-    .countDocuments();
 
   const paginationData = calcPaginationData({ page, perPage, totalItems });
 
