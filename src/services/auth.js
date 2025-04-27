@@ -27,7 +27,7 @@ export const findUser = (query) => UserCollection.findOne(query);
 
 export const registerUser = async (payload) => {
   const { email, password } = payload;
-  const user = await UserCollection.findOne({ email });
+  const user = await UserCollection.findOne({ email: payload.email });
   if (user) {
     const error = new Error('ConflictError');
     error.status = 409;
@@ -42,7 +42,7 @@ export const registerUser = async (payload) => {
 
 export const loginUser = async (payload) => {
   const { email, password } = payload;
-  const user = await UserCollection.findOne({ email });
+  const user = await UserCollection.findOne({ email: payload.email });
   if (!user) {
     throw createHttpError(401, 'Email or password invalid');
   }
