@@ -44,33 +44,3 @@ contactsRouter.patch(
 contactsRouter.delete('/:id', isValidId, ctrlWrapper(deleteContactController));
 
 export default contactsRouter;
-
-// src/routers/students.js
-
-/* Інший код файлу */
-
-// contactsRouter.post(
-//   '/',
-//   checkRoles(ROLES.TEACHER),
-//   upload.single('photo'), // додаємо цю middleware
-//   validateBody(createStudentSchema),
-//   ctrlWrapper(createStudentController),
-// );
-
-// contactsRouter.put(
-//   '/:studentId',
-//   checkRoles(ROLES.TEACHER),
-//   isValidId,
-//   upload.single('photo'), // додаємо цю middleware
-//   validateBody(createStudentSchema),
-//   ctrlWrapper(upsertStudentController),
-// );
-
-// contactsRouter.patch(
-//   '/:studentId',
-//   checkRoles(ROLES.TEACHER, ROLES.PARENT),
-//   isValidId,
-//   upload.single('photo'), // додаємо цю middleware
-//   validateBody(updateStudentSchema),
-//   ctrlWrapper(patchStudentController),
-// );
