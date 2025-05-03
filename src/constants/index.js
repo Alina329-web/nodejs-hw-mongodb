@@ -15,4 +15,10 @@ export const SMTP = {
   JWT_SECRET: 'JWT_SECRET',
 };
 
+export const CLOUDINARY = {
+  CLOUD_NAME: 'CLOUD_NAME',
+  API_KEY: 'API_KEY',
+  API_SECRET: 'API_SECRET',
+};
 export const TEMPLATES_DIR = path.join(process.cwd(), 'src', 'templates');
+export const UPLOAD_DIR = path.join(process.cwd(), 'uploads');
