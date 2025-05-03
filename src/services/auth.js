@@ -1,8 +1,19 @@
 import bcrypt from 'bcrypt';
-import { randomBytes } from 'node:crypto';
 import createHttpError from 'http-errors';
+import { randomBytes } from 'node:crypto';
+import jwt from 'jsonwebtoken';
+import handlebars from 'handlebars';
+import path from 'node:path';
+import fs from 'node:fs/promises';
+
 import UserCollection from '../db/models/User.js';
 import SessionCollection from '../db/models/Session.js';
+
+import { SMTP } from '../constants/index.js';
+import { getEnvVar } from '../utils/getEnvVar.js';
+import { sendEmail } from '../utils/sendMail.js';
+import { TEMPLATES_DIR } from '../constants/index.js';
+
 import {
   accessTokenLifeTime,
   refreshTokenLifeTime,
@@ -21,6 +32,7 @@ const createSession = () => {
     refreshTokenValidUntil,
   };
 };
+
 export const findSession = (query) => SessionCollection.findOne(query);
 
 export const findUser = (query) => UserCollection.findOne(query);
@@ -61,39 +73,6 @@ export const loginUser = async (payload) => {
     ...session,
   });
 };
-export const refreshUser = async ({ refreshToken, sessionId }) => {
-  const session = await findSession({ refreshToken, _id: sessionId });
-  if (!session) {
-    throw createHttpError(401, 'Session not found');
-  }
-  if (session.refreshTokenValidUntil < Date.now()) {
-    await SessionCollection.findOneAndDelete({ _id: session._id });
-    throw createHttpError(401, 'Access token expired');
-  }
-  await SessionCollection.findOneAndDelete({ _id: session._id });
-
-  const newSession = createSession();
-  return SessionCollection.create({
-    userId: session.userId,
-    ...newSession,
-  });
-};
-
-export const logautUser = (sessionId) =>
-  SessionCollection.deleteOne({ _id: sessionId });
-
-/* Інший код файлу */
-
-// src/services/auth.js
-
-import jwt from 'jsonwebtoken';
-
-import { SMTP } from '../constants/index.js';
-import { getEnvVar } from '../utils/getEnvVar.js';
-import { sendEmail } from '../utils/sendMail.js';
-import handlebars from 'handlebars';
-import path from 'node:path';
-import fs from 'node:fs/promises';
 
 export const requestResetToken = async (email) => {
   const user = await UserCollection.findOne({ email });
@@ -123,8 +102,9 @@ export const requestResetToken = async (email) => {
   const template = handlebars.compile(templateSource);
   const html = template({
     name: user.name,
-    link: `${getEnvVar('APP_DOMAIN')}/reset-password?token=${resetToken}`,
+    link: `${getEnvVar('APP_DOMAIN')}/reset-pwd?token=${resetToken}`,
   });
+
   try {
     await sendEmail({
       from: getEnvVar(SMTP.SMTP_FROM),
@@ -167,4 +147,26 @@ export const resetPassword = async (payload) => {
     { _id: user._id },
     { password: encryptedPassword },
   );
+  await SessionCollection.deleteMany({ userId: user._id });
 };
+
+export const refreshUser = async ({ refreshToken, sessionId }) => {
+  const session = await findSession({ refreshToken, _id: sessionId });
+  if (!session) {
+    throw createHttpError(401, 'Session not found');
+  }
+  if (session.refreshTokenValidUntil < Date.now()) {
+    await SessionCollection.findOneAndDelete({ _id: session._id });
+    throw createHttpError(401, 'Access token expired');
+  }
+  await SessionCollection.findOneAndDelete({ _id: session._id });
+
+  const newSession = createSession();
+  return SessionCollection.create({
+    userId: session.userId,
+    ...newSession,
+  });
+};
+
+export const logautUser = (sessionId) =>
+  SessionCollection.deleteOne({ _id: sessionId });
