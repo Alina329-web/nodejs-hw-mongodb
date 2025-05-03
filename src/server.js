@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import cors from 'cors';
 
@@ -28,7 +30,7 @@ export const setupServer = () => {
   // console.log(process.env.PORT);
   const port = Number(getEnvVar('PORT', 3000));
 
-  app.listen(port, () => console.log(`Server running on port ${port}`));
-
   app.use('/uploads', express.static(UPLOAD_DIR));
+
+  app.listen(port, () => console.log(`Server running on port ${port}`));
 };
