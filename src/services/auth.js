@@ -113,7 +113,7 @@ export const requestResetToken = async (email) => {
       html,
     });
   } catch (err) {
-    console.error('Error while sending email:', err);
+    // console.error('Error while sending email:', err);
     if (err)
       throw createHttpError(
         500,
